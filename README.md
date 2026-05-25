@@ -41,4 +41,4 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 ### 5. run 
-python3 app.py
+python3 app.py on terminal at that folder
