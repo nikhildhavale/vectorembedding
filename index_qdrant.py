@@ -22,14 +22,13 @@ class QdrantManager:
         vector = self.model.encode(text).tolist()
         return vector
     def create_qdrant_collection(self, client: QdrantClient):
-        if client.collection_exists(COLLECTION_NAME):
-            client.delete_collection(COLLECTION_NAME)
-        client.create_collection(
-            collection_name=COLLECTION_NAME,
-            vectors_config=VectorParams(
-            size=VECTOR_DIMENSION,
-            distance=Distance.COSINE,
-        ),
+        if not client.collection_exists(COLLECTION_NAME):
+            client.create_collection(
+                 collection_name=COLLECTION_NAME,
+                 vectors_config=VectorParams(
+                     size=VECTOR_DIMENSION,
+                       distance=Distance.COSINE,
+ ),
     )
         return client
     def create_point(self, repo, vector, point_id):
@@ -61,6 +60,19 @@ class QdrantManager:
         collection_name=COLLECTION_NAME,
         points=points,
     )
+    def ensure_indexed(self):
+        collection_info = self.client.get_collection(COLLECTION_NAME)
+        if collection_info.points_count and collection_info.points_count > 0:
+             return
+        points = []
+        for index, repo in enumerate(self.repos):
+            text = self.repo_to_text(repo)
+            vector = self.sentence_embedding(text)
+            point = self.create_point(repo, vector, index)
+            points.append(point)
+        
+        self.insert_points(points)
+
     def search_repositories(self, query, top_k=5):
         query_vector = self.sentence_embedding(query)
         search_result = self.client.query_points(

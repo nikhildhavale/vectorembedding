@@ -28,13 +28,7 @@ def search_ui(query):
 
 demo = gr.Interface(fn=show_repositories, inputs=None, outputs="text")
 manager = QdrantManager()
-points = []
-for index, repo in enumerate(manager.repos):
-    text = manager.repo_to_text(repo)
-    vector = manager.sentence_embedding(text)
-    point = manager.create_point(repo, vector, index)
-    points.append(point)
-manager.insert_points(points)
+manager.ensure_indexed()
 
 demo = gr.Interface(
     fn=search_ui,
