@@ -1,0 +1,7 @@
+.DS_Store
+.venv/
+.gradio/
+__pycache__/
+*.py[cod]
+rust_repos.json
+qdrant_data/
