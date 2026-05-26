@@ -1,5 +1,10 @@
 # vectorembedding
 Vector qdrant with github repos as data
+
+## Flow Diagram
+
+![Vector repository search flow](assets/flow-diagram.svg)
+
 ## Prerequisites
 
 - Python 3.8 or higher

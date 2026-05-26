@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Vector repository search data flow</title>
+  <desc id="desc">A data flow diagram showing how GitHub repository data is embedded, stored in Qdrant, searched from Gradio, and returned to the user.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#334155" />
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 15px Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 14px Arial, sans-serif; fill: #334155; }
+      .label { font: 700 13px Arial, sans-serif; fill: #475569; }
+      .small { font: 400 12px Arial, sans-serif; fill: #64748b; }
+      .process { fill: #eff6ff; stroke: #2563eb; }
+      .store { fill: #ecfdf5; stroke: #059669; }
+      .external { fill: #fff7ed; stroke: #ea580c; }
+      .output { fill: #fdf2f8; stroke: #db2777; }
+      .model { fill: #f5f3ff; stroke: #7c3aed; }
+      .line { stroke: #334155; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke-dasharray: 7 7; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1200" height="760" rx="24" />
+  <text class="title" x="60" y="58">Vector Search Flow for GitHub Repositories</text>
+  <text class="subtitle" x="60" y="84">Data moves from repository JSON to embeddings, into Qdrant, then back through Gradio as ranked search results.</text>
+
+  <!-- External input and output -->
+  <rect class="external" x="60" y="150" width="190" height="118" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="94" y="190">User</text>
+  <text class="box-text" x="94" y="218">Types a search query</text>
+  <text class="box-text" x="94" y="240">in the Gradio UI</text>
+
+  <rect class="output" x="950" y="150" width="190" height="118" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="986" y="190">Results Table</text>
+  <text class="box-text" x="986" y="218">Repository matches</text>
+  <text class="box-text" x="986" y="240">with similarity scores</text>
+
+  <!-- Main processes -->
+  <rect class="process" x="350" y="132" width="220" height="154" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="386" y="174">Gradio App</text>
+  <text class="small" x="386" y="197">app.py</text>
+  <text class="box-text" x="386" y="225">Accepts user input</text>
+  <text class="box-text" x="386" y="247">Calls search function</text>
+  <text class="box-text" x="386" y="269">Formats rows for UI</text>
+
+  <rect class="process" x="655" y="132" width="220" height="154" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="690" y="174">Qdrant Manager</text>
+  <text class="small" x="690" y="197">index_qdrant.py</text>
+  <text class="box-text" x="690" y="225">Loads repos and model</text>
+  <text class="box-text" x="690" y="247">Creates vectors</text>
+  <text class="box-text" x="690" y="269">Runs vector search</text>
+
+  <!-- Data stores and model -->
+  <rect class="store" x="128" y="438" width="230" height="142" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="166" y="480">Repository Data</text>
+  <text class="small" x="166" y="503">rust_repos.json</text>
+  <text class="box-text" x="166" y="531">Name, description,</text>
+  <text class="box-text" x="166" y="553">stars, forks, URL</text>
+
+  <rect class="model" x="485" y="438" width="230" height="142" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="526" y="480">Embedding Model</text>
+  <text class="small" x="526" y="503">all-MiniLM-L6-v2</text>
+  <text class="box-text" x="526" y="531">Converts text into</text>
+  <text class="box-text" x="526" y="553">384-dim vectors</text>
+
+  <rect class="store" x="842" y="438" width="230" height="142" rx="18" filter="url(#shadow)" stroke-width="2.5" />
+  <text class="box-title" x="882" y="480">Vector Database</text>
+  <text class="small" x="882" y="503">qdrant_db</text>
+  <text class="box-text" x="882" y="531">Collection:</text>
+  <text class="box-text" x="882" y="553">rust_repositories</text>
+
+  <!-- Flow arrows -->
+  <path class="line" d="M250 209 H350" />
+  <text class="label" x="270" y="196">query</text>
+
+  <path class="line" d="M570 209 H655" />
+  <text class="label" x="586" y="196">search request</text>
+
+  <path class="line" d="M875 209 H950" />
+  <text class="label" x="888" y="196">ranked rows</text>
+
+  <path class="line" d="M970 438 V340 H765 V286" />
+  <text class="label" x="802" y="330">top matches</text>
+
+  <path class="line" d="M765 286 V438" />
+  <text class="label" x="780" y="364">query text</text>
+
+  <path class="line" d="M715 509 H842" />
+  <text class="label" x="742" y="496">vectors</text>
+
+  <path class="line" d="M358 509 H485" />
+  <text class="label" x="382" y="496">repo text</text>
+
+  <path class="line" d="M243 438 V356 H655" />
+  <text class="label" x="286" y="346">repository records</text>
+
+  <path class="line dash" d="M957 438 V356 H780 V286" />
+  <text class="label" x="824" y="386">similarity search</text>
+
+  <path class="line dash" d="M600 438 V354 H765" />
+  <text class="label" x="617" y="344">query embedding</text>
+
+  <!-- Legend -->
+  <rect x="60" y="648" width="1080" height="62" rx="14" fill="#ffffff" stroke="#cbd5e1" />
+  <rect class="external" x="86" y="670" width="18" height="18" rx="4" />
+  <text class="small" x="114" y="684">External entity</text>
+  <rect class="process" x="245" y="670" width="18" height="18" rx="4" />
+  <text class="small" x="273" y="684">Process</text>
+  <rect class="store" x="372" y="670" width="18" height="18" rx="4" />
+  <text class="small" x="400" y="684">Data store</text>
+  <rect class="model" x="512" y="670" width="18" height="18" rx="4" />
+  <text class="small" x="540" y="684">Embedding model</text>
+  <rect class="output" x="688" y="670" width="18" height="18" rx="4" />
+  <text class="small" x="716" y="684">Output</text>
+  <line x1="820" y1="679" x2="880" y2="679" class="line" />
+  <text class="small" x="895" y="684">Labeled data flow</text>
+</svg>
