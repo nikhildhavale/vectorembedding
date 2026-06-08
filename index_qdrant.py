@@ -1,13 +1,11 @@
 import json
-from pydoc import text
-from xml.parsers.expat import model
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance,PointStruct,VectorParams
 from sentence_transformers import SentenceTransformer
 DATA_FILE = "rust_repos.json"
 DB_PATH = "qdrant_db"
-COLLECTION_NAME = "rust_repositories"
-MODEL_NAME = "all-MiniLM-L6-v2"
+COLLECTION_NAME = "rust_repositories_multilingual"
+MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 VECTOR_DIMENSION = 384
 class QdrantManager:
     def __init__(self, db_path=DB_PATH):
